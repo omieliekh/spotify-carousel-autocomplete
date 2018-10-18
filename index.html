@@ -1,13 +1,116 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>CXA Group Test</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.js"></script>
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="spotify.css">
+  <link rel="stylesheet" href="carousel.css">
+  <link rel="stylesheet" href="autocomplete.css">
 </head>
 <body>
 
+<div id="app">
+  <div class="tabs">
+    <button
+      v-on:click="activateTab('spotify')"
+      v-bind:class="{ active: activeTab === 'spotify' }"
+    >Spotify API</button>
+    <button
+      v-on:click="activateTab('carousel')"
+      v-bind:class="{ active: activeTab === 'carousel' }"
+    >Carousel</button>
+    <button
+      v-on:click="activateTab('autocomplete')"
+      v-bind:class="{ active: activeTab === 'autocomplete' }"
+    >Autocomplete</button>
+  </div>
+
+  <div v-if="activeTab === 'spotify'" class="spotify">
+    <div class="input-wrapper">
+      <p>Live reload! Try to change the text and see what happens!</p>
+
+      <input
+        v-model="spotifyValue"
+        v-on:keyup="modifySpotify"
+        type="text"
+        class="input">
+    </div>
+
+    <div class="spotify-wrapper">
+      <div v-for="(item, index) in spotifyItems" class="spotify-item">
+        <img v-bind:src="getImage(item)">
+        <p>{{ item.name }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div v-if="activeTab === 'carousel'" class="carousel">
+    <h2 class="header">Carousel</h2>
+
+    <div class="carousel-wrapper">
+      <img
+        v-on:click="scrollLeft"
+        v-bind:disabled="carouselPosition === 0"
+        class="chevron scroll-left"
+        src="images/chevron-left.svg">
+
+      <img
+        v-on:click="scrollRight"
+        v-bind:disabled="carouselItems.length - 3 === carouselPosition"
+        class="chevron scroll-right"
+        src="images/chevron-left.svg">
+
+      <div class="carousel-images">
+        <template v-for="(item, index) in carouselItems">
+          <a
+            v-bind:href="item.link"
+            v-bind:style="{ transform: 'translateX(-' + carouselPosition + '00%)' }"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img v-bind:src="item.media.m">
+          </a>
+        </template>
+      </div>
+    </div>
+
+  </div>
+
+  <div v-if="activeTab === 'autocomplete'" class="autocomplete">
+    <h2 class="header">Autocomplete</h2>
+
+    <div class="input-wrapper">
+      <p>What is your favourite javascript tech?</p>
+      <p>Use Up/Down keys to navigate on autocomplete</p>
+      <p>Use Enter/Esc buttons to choose an item or ot hide autocomplete</p>
+      <input
+        ref="autocompleteValue"
+        v-model="autocompleteValue"
+        v-on:keyup="modifyAutocomplete"
+        v-on:focus="modifyAutocomplete"
+        v-on:blur="closeAutocomplete"
+        type="text"
+        class="input">
+      <ul v-if="isAutocompleteShown" class="autocomplete-items">
+        <li
+          v-for="(item, index) in autocompleteFilteredItems"
+          v-bind:class="{ active: activeAutocompleteItemIndex === index }"
+          v-on:mousedown="chooseAutocompleteItem(index)"
+        >{{ item }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
+</html>
 </html>

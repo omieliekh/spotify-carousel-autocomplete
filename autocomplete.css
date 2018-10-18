@@ -1,0 +1,16 @@
+.autocomplete-items {
+  position: absolute;
+  width: 100%;
+  top: 100%;
+}
+
+.autocomplete-items li {
+  cursor: pointer;
+  line-height: 30px;
+  padding: 0 4px;
+}
+
+.autocomplete-items li:hover,
+.autocomplete-items li.active {
+  background: #eee;
+}
